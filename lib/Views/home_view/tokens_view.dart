@@ -33,47 +33,65 @@ class TokensView extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: Selector<TinyController, List<Token>>(
-              selector: (_, con) => con.tokens,
-              builder: (_, tokens, child) => tokens.isEmpty
-                  ? const Center(
-                      child: SizedBox(height: 100, child: Text("No tokens 🥺")),
-                    )
-                  : Table(
-                      border: TableBorder(),
-                      children: [
-                        const TableRow(
-                          decoration: BoxDecoration(
-                            color: Color(4294959282),
-                          ),
-                          children: [
-                            Text(
-                              "Class",
-                              textAlign: TextAlign.center,
-                            ),
-                            Text(
-                              "Type",
-                              textAlign: TextAlign.center,
-                            ),
-                            Text(
-                              "Value",
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                        ...tokens.map<TableRow>(
-                          (token) => TableRow(
-                            children: [
-                              Text(token.runtimeType.toString()),
-                              Text(token.type.toString().split('.')[1]),
-                              Text(token.value.toString()),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20),
+              child: Selector<TinyController, bool>(
+                selector: (_, con) => con.isInvalidSourceCode,
+                builder: (_, isInvalidSourceCode, child) => isInvalidSourceCode
+                    ? Center(
+                        child: Text(
+                            "The source code has an error near ${context.read<TinyController>().invalidToken?.value}"))
+                    : Selector<TinyController, List<Token>>(
+                        selector: (_, con) => con.tokens,
+                        builder: (_, tokens, child) => tokens.isEmpty
+                            ? const Center(child: Text("No tokens 🥺"))
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    "👌",
+                                    style: TextStyle(fontSize: 24),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Table(
+                                    children: [
+                                      const TableRow(
+                                        decoration: BoxDecoration(
+                                          color: Color(4294959282),
+                                        ),
+                                        children: [
+                                          Text(
+                                            "Class",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(
+                                            "Type",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(
+                                            "Value",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                      ...tokens.map<TableRow>(
+                                        (token) => TableRow(
+                                          children: [
+                                            Text(token.runtimeType.toString()),
+                                            Text(token.type
+                                                .toString()
+                                                .split('.')[1]),
+                                            Text(token.value.toString()),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                      ),
+              ),
             ),
           ),
         ],

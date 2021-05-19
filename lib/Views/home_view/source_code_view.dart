@@ -40,17 +40,19 @@ class SourceCodeView extends StatelessWidget {
               ),
             ),
           ),
-          SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: Selector<TinyController, String>(
-              selector: (_, con) => con.sourceCode,
-              builder: (_, sourceCode, child) => sourceCode.trim().isEmpty
-                  ? Center(child: Text("The source code file is empty."))
-                  : SelectableText.rich(
-                      TextSpan(
-                        text: sourceCode,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20),
+              child: Selector<TinyController, String>(
+                selector: (_, con) => con.sourceCode,
+                builder: (_, sourceCode, child) => sourceCode.trim().isEmpty
+                    ? Center(child: Text("The source code file is empty."))
+                    : SelectableText.rich(
+                        TextSpan(
+                          text: sourceCode,
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
         ],

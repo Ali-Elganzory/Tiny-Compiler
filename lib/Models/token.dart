@@ -8,11 +8,12 @@ abstract class Token {
 
 /// Invalid tokens like [Token.Invalid], generally, or [Token.EndOfLine].
 class InvalidToken implements Token {
-  const InvalidToken(this._type);
+  const InvalidToken(this._type, this._value);
   final TokenType _type;
+  final String _value;
 
   TokenType get type => _type;
-  String get value => type.toString();
+  String get value => type == TokenType.EndOfFile ? type.toString() : _value;
 }
 
 /// Language keywords like if and repeat.

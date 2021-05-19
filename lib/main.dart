@@ -8,11 +8,13 @@ import 'package:tiny_compiler/Views/home_view/home_view.dart';
 void main() async {
   runApp(App());
 
+  /*
   print(Colors.orange.shade100.value);
   print(Colors.orange.shade200.value);
   print(Colors.orange.shade300.value);
   print(Colors.orange.shade400.value);
   print(Colors.orange.shade500.value);
+  */
 }
 
 class App extends StatelessWidget {

@@ -56,6 +56,7 @@ class TinyController extends ChangeNotifier {
   Future<void> scanSourceCode() async {
     if (!ready) return;
     ready = false;
+    isInvalidSourceCode = false;
     Token token = _scanner!.read();
     while (!(token is InvalidToken)) {
       _tokens.add(token);
@@ -63,7 +64,10 @@ class TinyController extends ChangeNotifier {
       token = _scanner!.read();
     }
 
-    if (token.type == TokenType.Invalid) isInvalidSourceCode = true;
+    if (token.type == TokenType.Invalid) {
+      isInvalidSourceCode = true;
+      _invalidToken = token;
+    }
 
     ready = true;
   }
@@ -98,4 +102,7 @@ class TinyController extends ChangeNotifier {
     _isInvalidSourceCode = v;
     notifyListeners();
   }
+
+  Token? _invalidToken;
+  Token? get invalidToken => _invalidToken;
 }

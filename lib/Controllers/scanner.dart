@@ -119,7 +119,7 @@ class Scanner {
                 state = AutomatonState.In_Identifier;
                 break;
               }
-              return InvalidToken(TokenType.Invalid);
+              return InvalidToken(TokenType.Invalid, buffer.toString());
           }
           break;
         ////  Finished start state  ////
@@ -143,7 +143,7 @@ class Scanner {
               state = AutomatonState.Assignment;
               break;
             default:
-              return InvalidToken(TokenType.Invalid);
+              return InvalidToken(TokenType.Invalid, buffer.toString());
           }
           break;
         ////  Finished assignment state  ////
@@ -658,7 +658,7 @@ class Scanner {
       }
     }
 
-    return InvalidToken(TokenType.EndOfFile);
+    return InvalidToken(TokenType.EndOfFile, buffer.toString());
   }
 }
 
