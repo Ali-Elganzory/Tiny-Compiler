@@ -67,7 +67,7 @@ class TokensView extends StatelessWidget {
                           (token) => TableRow(
                             children: [
                               Text(token.runtimeType.toString()),
-                              Text(token.type.toString().split('.')[0]),
+                              Text(token.type.toString().split('.')[1]),
                               Text(token.value.toString()),
                             ],
                           ),
