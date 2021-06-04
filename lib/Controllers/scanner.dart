@@ -27,6 +27,10 @@ class Scanner {
     return _currentIndex >= 0;
   }
 
+  void reset() {
+    _currentIndex = -1;
+  }
+
   /// Current charachter as string
   int get currentCharacterCode => _fileMap.charByte(_currentIndex);
   String get currentCharacter => String.fromCharCode(currentCharacterCode);
@@ -119,6 +123,8 @@ class Scanner {
                 state = AutomatonState.In_Identifier;
                 break;
               }
+
+              reset();
               return InvalidToken(TokenType.Invalid, buffer.toString());
           }
           break;
@@ -143,6 +149,7 @@ class Scanner {
               state = AutomatonState.Assignment;
               break;
             default:
+              reset();
               return InvalidToken(TokenType.Invalid, buffer.toString());
           }
           break;
@@ -329,7 +336,7 @@ class Scanner {
         case AutomatonState.Read_2:
           switch (char) {
             case 'd':
-              state = AutomatonState.Read_2;
+              state = AutomatonState.Read_1;
               break;
             default:
               if (isLetter(charCode) || isDigit(charCode)) {
@@ -658,6 +665,7 @@ class Scanner {
       }
     }
 
+    reset();
     return InvalidToken(TokenType.EndOfFile, buffer.toString());
   }
 }

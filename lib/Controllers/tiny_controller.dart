@@ -30,20 +30,24 @@ class TinyController extends ChangeNotifier {
   }
 
   Future<bool> loadSourceCodeFile() async {
+    if (isLoadingFile) return false;
     ready = false;
     String path = await _pickSourceCodeFilePath();
     if (path.isEmpty) return false;
     _filePath = path;
-    {
+
       isLoadingFile = true;
-      _fileMap = await FileMap.fromPath(path);
-      isLoadingFile = false;
+    {
+      _fileMap = await compute(FileMap.fromPath, path);
     }
+
     {
       isLoadingSourceCode = true;
       _sourceCode = await _fileMap!.readAsString();
       isLoadingSourceCode = false;
     }
+      isLoadingFile = false;
+
     _scanner = Scanner(_fileMap!);
     {
       _tokens.clear();

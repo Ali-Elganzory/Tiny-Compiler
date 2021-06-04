@@ -58,7 +58,11 @@ class _HomeViewState extends State<HomeView> {
             builder: (_, isLoadingFile, child) => SizedBox(
               width: 80,
               child: isLoadingFile
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white)),
+                    )
                   : IconButton(
                       constraints: BoxConstraints(minWidth: 80),
                       icon: Icon(Icons.insert_drive_file),
