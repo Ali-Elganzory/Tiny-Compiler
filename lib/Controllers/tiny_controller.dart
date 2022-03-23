@@ -1,19 +1,20 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:filepicker_windows/filepicker_windows.dart';
-import 'package:tiny_compiler/Controllers/audio_player.dart';
 
-import 'package:tiny_compiler/Controllers/file_map.dart';
-import 'package:tiny_compiler/Controllers/scanner.dart';
-import 'package:tiny_compiler/Models/token.dart';
+import './/Controllers/audio_player.dart';
+import './/Controllers/file_map.dart';
+import './/Controllers/scanner.dart';
+import './/Models/token.dart';
 
 class TinyController extends ChangeNotifier {
   String _filePath = "";
   FileMap? _fileMap;
   String _sourceCode = "";
-  Scanner? _scanner;
+  final TextEditingController sourceCodeEditorController =
+      TextEditingController();
 
   String get filePath => _filePath;
   String get sourceCode => _sourceCode;
@@ -25,10 +26,10 @@ class TinyController extends ChangeNotifier {
   bool get ready => _ready;
   set ready(bool v) {
     _ready = v;
-    if (v) AudioPlayer.playAssetAudio("assets/audio/meow01.wav");
     notifyListeners();
   }
 
+  /// Load the source code from a file
   Future<bool> loadSourceCodeFile() async {
     if (isLoadingFile) return false;
     ready = false;
@@ -44,30 +45,38 @@ class TinyController extends ChangeNotifier {
     {
       isLoadingSourceCode = true;
       _sourceCode = await _fileMap!.readAsString();
+      sourceCodeEditorController.text = _sourceCode;
       isLoadingSourceCode = false;
     }
     isLoadingFile = false;
 
-    _scanner = Scanner(_fileMap!);
     {
       _tokens.clear();
       notifyListeners();
     }
+
+    AudioPlayer.playAssetAudio("assets/audio/meow01.wav");
+
     ready = true;
     return true;
   }
 
   Future<void> scanSourceCode() async {
     if (!ready) return;
+
     ready = false;
     isInvalidSourceCode = false;
     _tokens.clear();
     notifyListeners();
-    Token token = _scanner!.read();
-    while (!(token is InvalidToken)) {
+
+    final FileMap fileMap =
+        await FileMap.fromString(sourceCodeEditorController.text);
+    final Scanner scanner = Scanner(fileMap);
+    Token token = scanner.read();
+    while (token is! InvalidToken) {
       _tokens.add(token);
       notifyListeners();
-      token = _scanner!.read();
+      token = scanner.read();
     }
 
     if (token.type == TokenType.Invalid) {

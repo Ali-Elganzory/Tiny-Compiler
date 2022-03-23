@@ -29,7 +29,7 @@ class SourceCodeView extends StatelessWidget {
               builder: (_, path, child) => RichText(
                 text: TextSpan(
                   text: "File path: ",
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                   children: [
                     TextSpan(
                       text: path,
@@ -41,18 +41,14 @@ class SourceCodeView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Selector<TinyController, String>(
-                selector: (_, con) => con.sourceCode,
-                builder: (_, sourceCode, child) => sourceCode.trim().isEmpty
-                    ? const Center(
-                        child: Text("The source code file is empty."))
-                    : SelectableText.rich(
-                        TextSpan(
-                          text: sourceCode,
-                        ),
-                      ),
+            child: TextFormField(
+              controller:
+                  context.read<TinyController>().sourceCodeEditorController,
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 12),
               ),
             ),
           ),
