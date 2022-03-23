@@ -11,7 +11,7 @@ class SourceCodeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minWidth: double.maxFinite,
         minHeight: double.maxFinite,
       ),
@@ -42,11 +42,12 @@ class SourceCodeView extends StatelessWidget {
           ),
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Selector<TinyController, String>(
                 selector: (_, con) => con.sourceCode,
                 builder: (_, sourceCode, child) => sourceCode.trim().isEmpty
-                    ? Center(child: Text("The source code file is empty."))
+                    ? const Center(
+                        child: Text("The source code file is empty."))
                     : SelectableText.rich(
                         TextSpan(
                           text: sourceCode,

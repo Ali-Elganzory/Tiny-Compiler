@@ -1,10 +1,17 @@
 import 'package:dart_vlc/dart_vlc.dart';
 
 class AudioPlayer {
-  static Future<void> playAssetAudio(String path) async {
-    Player player = new Player(id: 69420);
-    Media media = await Media.asset(path);
+  static void playAssetAudio(String path) {
+    final Player player = Player(
+      id: 69420,
+      commandlineArguments: ['--no-video'],
+    );
 
-    await player.open(media);
+    Media media = Media.asset(path);
+
+    player.open(
+      media,
+      autoStart: true,
+    );
   }
 }

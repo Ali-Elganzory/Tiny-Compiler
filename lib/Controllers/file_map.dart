@@ -17,7 +17,9 @@ class FileMap {
     final Uint8List bytes = await file.readAsBytes();
 
     return FileMap._create(
-        file, padEnd ? Uint8List.fromList(bytes + [10]) : bytes);
+      file,
+      bytes,
+    );
   }
 
   int get length => _fileBytes.length;

@@ -36,9 +36,9 @@ class TinyController extends ChangeNotifier {
     if (path.isEmpty) return false;
     _filePath = path;
 
-      isLoadingFile = true;
+    isLoadingFile = true;
     {
-      _fileMap = await compute(FileMap.fromPath, path);
+      _fileMap = await FileMap.fromPath(path);
     }
 
     {
@@ -46,7 +46,7 @@ class TinyController extends ChangeNotifier {
       _sourceCode = await _fileMap!.readAsString();
       isLoadingSourceCode = false;
     }
-      isLoadingFile = false;
+    isLoadingFile = false;
 
     _scanner = Scanner(_fileMap!);
     {
@@ -61,6 +61,8 @@ class TinyController extends ChangeNotifier {
     if (!ready) return;
     ready = false;
     isInvalidSourceCode = false;
+    _tokens.clear();
+    notifyListeners();
     Token token = _scanner!.read();
     while (!(token is InvalidToken)) {
       _tokens.add(token);

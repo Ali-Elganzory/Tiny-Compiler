@@ -163,10 +163,13 @@ class Scanner {
         case AutomatonState.In_Integer:
           if (char == '.')
             state = AutomatonState.In_Float;
-          else if (!isDigit(charCode)) state = AutomatonState.Number;
+          else if (isDigit(charCode)) state = AutomatonState.In_Integer;
+          else if (!isLetter(charCode)) state = AutomatonState.Number;
+          else return InvalidToken(TokenType.Invalid, buffer.toString());
           break;
         case AutomatonState.In_Float:
-          if (!isDigit(charCode)) state = AutomatonState.Number;
+          if (!isDigit(charCode) && !isLetter(charCode)) state = AutomatonState.Number;
+          else return InvalidToken(TokenType.Invalid, buffer.toString());
           break;
         ////  Finished identifiers and numbers states  ////
 
