@@ -1,28 +1,27 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
-import 'package:filepicker_windows/filepicker_windows.dart';
+import 'package:file_picker/file_picker.dart';
 
-import './/Controllers/audio_player.dart';
+// import './/Controllers/audio_player.dart';
 import './/Controllers/file_map.dart';
 import './/Controllers/scanner.dart';
 import './/Models/token.dart';
 
 class TinyController extends ChangeNotifier {
+  // Source code
   String _filePath = "";
-  FileMap? _fileMap;
-  String _sourceCode = "";
   final TextEditingController sourceCodeEditorController =
       TextEditingController();
 
   String get filePath => _filePath;
-  String get sourceCode => _sourceCode;
+  String get sourceCode => sourceCodeEditorController.text;
 
+  // Scanned tokens
   final List<Token> _tokens = [];
   List<Token> get tokens => [..._tokens];
 
-  bool _ready = false;
+  bool _ready = true;
   bool get ready => _ready;
   set ready(bool v) {
     _ready = v;
@@ -32,20 +31,20 @@ class TinyController extends ChangeNotifier {
   /// Load the source code from a file
   Future<bool> loadSourceCodeFile() async {
     if (isLoadingFile) return false;
+
     ready = false;
-    String path = await _pickSourceCodeFilePath();
-    if (path.isEmpty) return false;
+    String path = await compute<void, String>(_pickSourceCodeFilePath, null);
     _filePath = path;
+    if (path.isEmpty) {
+      ready = false;
+      return false;
+    }
 
     isLoadingFile = true;
     {
-      _fileMap = await FileMap.fromPath(path);
-    }
-
-    {
       isLoadingSourceCode = true;
-      _sourceCode = await _fileMap!.readAsString();
-      sourceCodeEditorController.text = _sourceCode;
+      sourceCodeEditorController.text =
+          await (await FileMap.fromPath(path)).readAsString();
       isLoadingSourceCode = false;
     }
     isLoadingFile = false;
@@ -55,47 +54,47 @@ class TinyController extends ChangeNotifier {
       notifyListeners();
     }
 
-    AudioPlayer.playAssetAudio("assets/audio/meow01.wav");
+    // AudioPlayer.playAssetAudio("assets/audio/meow01.wav");
 
     ready = true;
     return true;
   }
 
+  /// Scan (i.e., tokenize) the source code.
   Future<void> scanSourceCode() async {
     if (!ready) return;
 
     ready = false;
-    isInvalidSourceCode = false;
-    _tokens.clear();
-    notifyListeners();
-
-    final FileMap fileMap =
-        await FileMap.fromString(sourceCodeEditorController.text);
-    final Scanner scanner = Scanner(fileMap);
-    Token token = scanner.read();
-    while (token is! InvalidToken) {
-      _tokens.add(token);
+    {
+      isInvalidSourceCode = false;
+      _tokens.clear();
       notifyListeners();
-      token = scanner.read();
-    }
 
-    if (token.type == TokenType.Invalid) {
-      isInvalidSourceCode = true;
-      _invalidToken = token;
-    }
+      final FileMap fileMap =
+          await FileMap.fromString(sourceCodeEditorController.text);
 
+      final Scanner scanner = Scanner(fileMap);
+      Token token = scanner.read();
+      while (token is! InvalidToken) {
+        _tokens.add(token);
+        notifyListeners();
+        token = scanner.read();
+      }
+
+      if (token.type == TokenType.Invalid) {
+        isInvalidSourceCode = true;
+        _invalidToken = token;
+      }
+    }
     ready = true;
   }
 
-  Future<String> _pickSourceCodeFilePath() async {
-    final File? file = (OpenFilePicker()
-          ..defaultExtension = "tiny"
-          ..fileNameLabel = "Source code"
-          ..title = "Select source code file")
-        .getFile();
+  Token? _invalidToken;
+  Token? get invalidToken => _invalidToken;
 
-    return file?.path ?? "";
-  }
+  ///////////////////////
+  //      Flags
+  ///////////////////////
 
   bool _isLoadingFile = false;
   bool get isLoadingFile => _isLoadingFile;
@@ -117,7 +116,21 @@ class TinyController extends ChangeNotifier {
     _isInvalidSourceCode = v;
     notifyListeners();
   }
+}
 
-  Token? _invalidToken;
-  Token? get invalidToken => _invalidToken;
+///////////////////////
+//      Utils
+///////////////////////
+
+Future<String> _pickSourceCodeFilePath(void _) async {
+  final FilePickerResult? result = await FilePicker.platform.pickFiles(
+    allowedExtensions: ["tiny"],
+    dialogTitle: "Select a source code file",
+  );
+
+  if (result == null) {
+    return "";
+  }
+
+  return result.files.single.path ?? "";
 }

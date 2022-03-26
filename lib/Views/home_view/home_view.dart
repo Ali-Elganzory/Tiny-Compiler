@@ -37,7 +37,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: kToolbarHeight,
-        title: const Text("  😸    Tiny Scanner"),
+        title: const Text("🧑‍💻 Tiny Scanner"),
         actions: [
           Selector<TinyController, bool>(
             selector: (_, con) => con.ready,

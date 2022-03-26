@@ -32,8 +32,10 @@ class SourceCodeView extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w600),
                   children: [
                     TextSpan(
-                      text: path,
-                    )
+                        text: path.isNotEmpty ? path : "no file picked yet.",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                        ))
                   ],
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -49,6 +51,9 @@ class SourceCodeView extends StatelessWidget {
               maxLines: null,
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 12),
+              ),
+              style: const TextStyle(
+                fontFamily: "consolas",
               ),
             ),
           ),
