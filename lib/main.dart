@@ -1,14 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:dart_vlc/dart_vlc.dart';
 import 'package:provider/provider.dart';
 
-import './/Views/home_view/home_view.dart';
+import './/Views/home_page/home_page.dart';
 import './/Controllers/tiny_controller.dart';
 
 void main() async {
-  // Initialize DartVLC plugin
-  // DartVLC.initialize();
+  // Disable logging in release mode
+  if (kReleaseMode) {
+    debugPrint = (String? message, {int? wrapWidth}) {};
+  }
 
   // Run app
   runApp(const App());
@@ -29,7 +31,7 @@ class App extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => TinyController()),
         ],
-        child: const HomeView(),
+        child: const HomePage(),
       ),
     );
   }

@@ -1,8 +1,11 @@
-import 'package:tiny_compiler/Controllers/file_map.dart';
-import 'package:tiny_compiler/Models/token.dart';
+// ignore_for_file: constant_identifier_names
 
-import 'package:tiny_compiler/Utils/string_ext.dart';
-import 'package:tiny_compiler/Utils/string_buffer_ext.dart';
+import 'package:flutter/foundation.dart';
+
+import './/Controllers/file_map.dart';
+import './/Models/token.dart';
+import './/Utils/string_ext.dart';
+import './/Utils/string_buffer_ext.dart';
 
 /// The tiny language [Scanner].
 class Scanner {
@@ -35,7 +38,21 @@ class Scanner {
   int get currentCharacterCode => _fileMap.charByte(_currentIndex);
   String get currentCharacter => String.fromCharCode(currentCharacterCode);
 
+  /// Cache of recently scanned tokens.
+  List<Token> get scannedTokens => [..._scannedTokens];
+  final List<Token> _scannedTokens = [];
+
+  /// Read the next token and cache it.
+  ///
+  /// You can access the cache using [Scanner.scannedTokens].
   Token read() {
+    final Token token = _read();
+    _scannedTokens.add(token);
+    return token;
+  }
+
+  /// Read the next token.
+  Token _read() {
     StringBuffer buffer = StringBuffer();
     AutomatonState state = AutomatonState.Start;
 
@@ -157,19 +174,27 @@ class Scanner {
 
         ////  Identifiers and numbers states  ////
         case AutomatonState.In_Identifier:
-          if (!isLetter(charCode) && !isDigit(charCode))
+          if (!isLetter(charCode) && !isDigit(charCode)) {
             state = AutomatonState.Identifier;
+          }
           break;
         case AutomatonState.In_Integer:
-          if (char == '.')
+          if (char == '.') {
             state = AutomatonState.In_Float;
-          else if (isDigit(charCode)) state = AutomatonState.In_Integer;
-          else if (!isLetter(charCode)) state = AutomatonState.Number;
-          else return InvalidToken(TokenType.Invalid, buffer.toString());
+          } else if (isDigit(charCode)) {
+            state = AutomatonState.In_Integer;
+          } else if (!isLetter(charCode)) {
+            state = AutomatonState.Number;
+          } else {
+            return InvalidToken(TokenType.Invalid, buffer.toString());
+          }
           break;
         case AutomatonState.In_Float:
-          if (!isDigit(charCode) && !isLetter(charCode)) state = AutomatonState.Number;
-          else return InvalidToken(TokenType.Invalid, buffer.toString());
+          if (!isDigit(charCode) && !isLetter(charCode)) {
+            state = AutomatonState.Number;
+          } else {
+            return InvalidToken(TokenType.Invalid, buffer.toString());
+          }
           break;
         ////  Finished identifiers and numbers states  ////
 
@@ -590,7 +615,7 @@ class Scanner {
           }
           break;
         default:
-          print("Not a valid state: $state");
+          debugPrint("Not a valid state: $state");
         ////  Finished keywords states  ////
       }
 
@@ -622,13 +647,15 @@ class Scanner {
         case AutomatonState.NotEqual:
           return OperatorToken(TokenType.NotEqual, buffer.toString());
         case AutomatonState.Semicolon:
-          return OperatorToken(TokenType.Semicolon, buffer.toString());
+          return SingleSymbolToken(TokenType.Semicolon, buffer.toString());
         case AutomatonState.Assignment:
           return OperatorToken(TokenType.Assignment, buffer.toString());
         case AutomatonState.LeftParenthesis:
-          return OperatorToken(TokenType.LeftParenthesis, buffer.toString());
+          return SingleSymbolToken(
+              TokenType.LeftParenthesis, buffer.toString());
         case AutomatonState.RightParenthesis:
-          return OperatorToken(TokenType.RightParenthesis, buffer.toString());
+          return SingleSymbolToken(
+              TokenType.RightParenthesis, buffer.toString());
         // Keywords
         case AutomatonState.Else:
           _moveBack();

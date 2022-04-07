@@ -1,4 +1,4 @@
-extension codes on String {
+extension Codes on String {
   /// Code of the first character
-  int get code => this.codeUnitAt(0);
+  int get code => codeUnitAt(0);
 }

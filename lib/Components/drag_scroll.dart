@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
-typedef void OnDrag({required double dx, required double dy});
+typedef OnDrag = void Function({required double dx, required double dy});
 
 /// For scrolling a widget by exposing the [onDrag] callback with the dragged values [dx] and [dy]
 /// in the horizontal and vertical axes, respectively.

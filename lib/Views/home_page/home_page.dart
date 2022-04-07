@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import './/Components/drag_scroll.dart';
-import './/Components/vertical_drag_divider.dart';
-import './/Controllers/tiny_controller.dart';
-import './/Views/home_view/source_code_view.dart';
-import './/Views/home_view/tokens_view.dart';
+import '/Components/drag_scroll.dart';
+import '/Components/vertical_drag_divider.dart';
+import '/Components/tab_bar_page_view.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+import '/Views/source_code/source_code_view.dart';
+import '/Views/tokens/tokens_view.dart';
+import '/Views/syntax_tree/syntax_tree_view.dart';
+
+import '/Controllers/tiny_controller.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomePageState extends State<HomePage> {
   static const int percision = 10000;
   int leftRightScrollFractionalPosition = (0.6 * percision).toInt();
   late Size sz;
@@ -38,6 +42,7 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         toolbarHeight: kToolbarHeight,
         title: const Text("🧑‍💻 Tiny Scanner"),
+        elevation: 0,
         actions: [
           Selector<TinyController, bool>(
             selector: (_, con) => con.ready,
@@ -87,7 +92,21 @@ class _HomeViewState extends State<HomeView> {
           ),
           Expanded(
             flex: percision - leftRightScrollFractionalPosition,
-            child: const TokensView(),
+            child: TabBarPageView(
+              tabBarHeight: 40,
+              tabs: const [
+                Tab(
+                  text: "Tokens",
+                ),
+                Tab(
+                  text: "Syntax Tree",
+                ),
+              ],
+              pages: const [
+                TokensView(),
+                SyntaxTreeView(),
+              ],
+            ),
           ),
         ],
       ),

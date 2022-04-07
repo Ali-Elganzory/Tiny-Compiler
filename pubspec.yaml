@@ -12,6 +12,7 @@ dependencies:
   # dart_vlc: ^0.1.9
   provider: ^6.0.2
   file_picker: ^4.5.1
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4

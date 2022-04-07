@@ -1,9 +1,24 @@
+// ignore_for_file: constant_identifier_names
+
 /// [Token] structure that contains its [type] and [value].
+/// 
 /// It also incorporates a [toString].
 abstract class Token {
   TokenType get type;
   Object get value;
+
+  @override
   String toString() => value.toString();
+
+  @override
+  bool operator ==(other) {
+    return runtimeType == other.runtimeType &&
+        type == (other as Token).type &&
+        value == other.value;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 /// Invalid tokens like [Token.Invalid], generally, or [Token.EndOfLine].
@@ -12,7 +27,9 @@ class InvalidToken implements Token {
   final TokenType _type;
   final String _value;
 
+  @override
   TokenType get type => _type;
+  @override
   String get value => type == TokenType.EndOfFile ? type.toString() : _value;
 }
 
@@ -22,7 +39,9 @@ class KeywordToken implements Token {
   final TokenType _tokenType;
   final String _value;
 
+  @override
   TokenType get type => _tokenType;
+  @override
   String get value => _value;
 }
 
@@ -31,7 +50,9 @@ class IdentifierToken implements Token {
   const IdentifierToken(this._value);
   final String _value;
 
+  @override
   TokenType get type => TokenType.Identifier;
+  @override
   String get value => _value;
 }
 
@@ -40,7 +61,9 @@ class NumberToken implements Token {
   NumberToken(String value) : _value = num.tryParse(value) ?? -311;
   final num _value;
 
+  @override
   TokenType get type => TokenType.Number;
+  @override
   num get value => _value;
 }
 
@@ -50,20 +73,31 @@ class OperatorToken implements Token {
   final TokenType _tokenType;
   final String _value;
 
+  @override
   TokenType get type => _tokenType;
+  @override
   String get value => _value;
+  @override
+  String toString() => value;
 }
 
 // Other single symbol token
 class SingleSymbolToken implements Token {
   const SingleSymbolToken(this._tokenType, this._value);
   final TokenType _tokenType;
-  final int _value;
+  final String _value;
 
+  @override
   TokenType get type => _tokenType;
-  int get value => _value;
-  String toString() => String.fromCharCode(value);
+  @override
+  String get value => _value;
+  @override
+  String toString() => value;
 }
+
+/************************************
+ * Token types in this language
+ ************************************/
 
 /// Token types in this language
 enum TokenType {
