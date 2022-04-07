@@ -8,7 +8,8 @@ import '/Components/tab_bar_page_view.dart';
 
 import '/Views/source_code/source_code_view.dart';
 import '/Views/tokens/tokens_view.dart';
-import '/Views/syntax_tree/syntax_tree_view.dart';
+import '/Views/syntax_tree/syntax_tree_text_view.dart';
+import '/Views/syntax_tree/syntax_tree_canvas_view.dart';
 
 import '/Controllers/tiny_controller.dart';
 
@@ -99,12 +100,16 @@ class _HomePageState extends State<HomePage> {
                   text: "Tokens",
                 ),
                 Tab(
-                  text: "Syntax Tree",
+                  text: "Syntax Tree (Text)",
+                ),
+                Tab(
+                  text: "Syntax Tree (Graph)",
                 ),
               ],
               pages: const [
                 TokensView(),
-                SyntaxTreeView(),
+                SyntaxTreeTextView(),
+                SyntaxTreeCanvasView(),
               ],
             ),
           ),

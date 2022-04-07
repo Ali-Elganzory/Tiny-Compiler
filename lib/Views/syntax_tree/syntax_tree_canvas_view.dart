@@ -5,11 +5,10 @@ import 'package:provider/provider.dart';
 import '/Controllers/tiny_controller.dart';
 import '/Models/syntax_tree.dart';
 
-import './syntax_tree_text.dart';
 import './syntax_tree_canvas.dart';
 
-class SyntaxTreeView extends StatelessWidget {
-  const SyntaxTreeView({Key? key}) : super(key: key);
+class SyntaxTreeCanvasView extends StatelessWidget {
+  const SyntaxTreeCanvasView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class SyntaxTreeView extends StatelessWidget {
                     ? const Center(
                         child: Text("No parse tree yet 🥺"),
                       )
-                    : SyntaxTreeText(syntaxTree: syntaxTree),
+                    : SyntaxTreeCanvas(syntaxTree: syntaxTree),
               ),
       ),
     );

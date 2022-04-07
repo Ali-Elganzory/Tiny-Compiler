@@ -4,16 +4,17 @@ import '/Models/token.dart';
 abstract class SyntaxTreeNode {
   Token get token;
   List<SyntaxTreeNode> get children;
-  String get debugName;
+  String get dName;
+  int dReversedDepth = 0;
 
-  const SyntaxTreeNode();
+  bool get isLeaf => children.isEmpty;
 }
 
 class StmtSequanceSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode stmt;
   final SyntaxTreeNode nextStmtSequance;
 
-  const StmtSequanceSyntaxTreeNode(
+  StmtSequanceSyntaxTreeNode(
     this.token,
     this.stmt,
     this.nextStmtSequance,
@@ -25,7 +26,7 @@ class StmtSequanceSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [stmt, nextStmtSequance];
 
   @override
-  String get debugName => "Statement Sequance";
+  String get dName => "Statement Sequance";
 }
 
 class IfStmtSyntaxTreeNode extends SyntaxTreeNode {
@@ -33,7 +34,7 @@ class IfStmtSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode thenBody;
   final SyntaxTreeNode? elseBody;
 
-  const IfStmtSyntaxTreeNode(
+  IfStmtSyntaxTreeNode(
     this.token,
     this.testExp,
     this.thenBody,
@@ -47,14 +48,14 @@ class IfStmtSyntaxTreeNode extends SyntaxTreeNode {
       [testExp, thenBody, if (elseBody != null) elseBody!];
 
   @override
-  String get debugName => "If";
+  String get dName => "If";
 }
 
 class RepeatStmtSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode body;
   final SyntaxTreeNode untilExp;
 
-  const RepeatStmtSyntaxTreeNode(
+  RepeatStmtSyntaxTreeNode(
     this.token,
     this.body,
     this.untilExp,
@@ -66,14 +67,14 @@ class RepeatStmtSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [body, untilExp];
 
   @override
-  String get debugName => "Repeat";
+  String get dName => "Repeat";
 }
 
 class AssignStmtSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode leftHandSide;
   final SyntaxTreeNode rightHandSide;
 
-  const AssignStmtSyntaxTreeNode(
+  AssignStmtSyntaxTreeNode(
     this.token,
     this.leftHandSide,
     this.rightHandSide,
@@ -85,13 +86,13 @@ class AssignStmtSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [leftHandSide, rightHandSide];
 
   @override
-  String get debugName => "Assignment";
+  String get dName => "Assignment";
 }
 
 class ReadStmtSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode identifier;
 
-  const ReadStmtSyntaxTreeNode(
+  ReadStmtSyntaxTreeNode(
     this.token,
     this.identifier,
   );
@@ -102,13 +103,13 @@ class ReadStmtSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [identifier];
 
   @override
-  String get debugName => "Read";
+  String get dName => "Read";
 }
 
 class WriteStmtSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode exp;
 
-  const WriteStmtSyntaxTreeNode(
+  WriteStmtSyntaxTreeNode(
     this.token,
     this.exp,
   );
@@ -119,14 +120,14 @@ class WriteStmtSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [exp];
 
   @override
-  String get debugName => "Write";
+  String get dName => "Write";
 }
 
 class ExpSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode leftOperand;
   final SyntaxTreeNode rightOperand;
 
-  const ExpSyntaxTreeNode(
+  ExpSyntaxTreeNode(
     this.token,
     this.leftOperand,
     this.rightOperand,
@@ -141,14 +142,14 @@ class ExpSyntaxTreeNode extends SyntaxTreeNode {
       ];
 
   @override
-  String get debugName => "Expression";
+  String get dName => "Expression";
 }
 
 class SimpleExpSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode leftOperand;
   final SyntaxTreeNode rightOperand;
 
-  const SimpleExpSyntaxTreeNode(
+  SimpleExpSyntaxTreeNode(
     this.token,
     this.leftOperand,
     this.rightOperand,
@@ -163,14 +164,14 @@ class SimpleExpSyntaxTreeNode extends SyntaxTreeNode {
       ];
 
   @override
-  String get debugName => "Simple Expression";
+  String get dName => "Simple Expression";
 }
 
 class TermSyntaxTreeNode extends SyntaxTreeNode {
   final SyntaxTreeNode leftOperand;
   final SyntaxTreeNode rightOperand;
 
-  const TermSyntaxTreeNode(
+  TermSyntaxTreeNode(
     this.token,
     this.leftOperand,
     this.rightOperand,
@@ -185,11 +186,11 @@ class TermSyntaxTreeNode extends SyntaxTreeNode {
       ];
 
   @override
-  String get debugName => "Term";
+  String get dName => "Term";
 }
 
 class FactorSyntaxTreeNode extends SyntaxTreeNode {
-  const FactorSyntaxTreeNode(
+  FactorSyntaxTreeNode(
     this.token,
   );
 
@@ -199,5 +200,5 @@ class FactorSyntaxTreeNode extends SyntaxTreeNode {
   List<SyntaxTreeNode> get children => [];
 
   @override
-  String get debugName => "Factor";
+  String get dName => "Factor";
 }

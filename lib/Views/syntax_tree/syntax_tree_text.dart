@@ -21,7 +21,7 @@ class SyntaxTreeText extends StatelessWidget {
 
 extension AsString on SyntaxTreeNode {
   String asString([int level = 1]) {
-    return "$debugName: ${token.value}" +
+    return "$dName: ${token.value} :: $dReversedDepth" +
         children
             .map<String>((e) => "\n" + "    " * level + e.asString(level + 1))
             .join();
