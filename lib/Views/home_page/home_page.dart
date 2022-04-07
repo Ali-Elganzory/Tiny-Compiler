@@ -41,8 +41,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: kToolbarHeight,
-        title: const Text("🧑‍💻 Tiny Scanner"),
+        toolbarHeight: 0.8 * kToolbarHeight,
+        title: const Text("🧑‍💻"),
         elevation: 0,
         actions: [
           Selector<TinyController, bool>(

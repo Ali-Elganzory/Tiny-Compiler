@@ -14,7 +14,7 @@ class SyntaxTreeText extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
-      child: Text(syntaxTree.asString()),
+      child: SelectableText(syntaxTree.asString()),
     );
   }
 }
