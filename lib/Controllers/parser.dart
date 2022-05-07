@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+
 import 'package:flutter/cupertino.dart';
 
 import '/Controllers/scanner.dart';
@@ -55,7 +57,7 @@ class Parser {
     token = scanner.read();
     try {
       final syntaxTree = _stmtSequance();
-      syntaxTree.annotateReversedDepth();
+      syntaxTree.annotate();
       return syntaxTree;
     } on Exception catch (e) {
       _errorMessage = e.toString();
@@ -296,14 +298,18 @@ bool _isMulOp(Token token) {
 }
 
 extension ReversedDepth on SyntaxTreeNode {
-  annotateReversedDepth() {
-    if (isLeaf) {
-      return 0;
+  /// Annotate accounting information
+  /// (i.e., dReversedDepth and dDescendentsCount).
+  void annotate() {
+    for (final child in children) {
+      child.annotate();
     }
 
-    dReversedDepth =
-        (children.map<int>((e) => e.annotateReversedDepth())).reduce(max) + 1;
+    dReversedDepth = children.isEmpty
+        ? 0
+        : children.map<int>((e) => e.dReversedDepth).reduce(max) + 1;
 
-    return dReversedDepth;
+    dDescendentsCount =
+        children.map<int>((e) => e.dDescendentsCount).sum + children.length;
   }
 }

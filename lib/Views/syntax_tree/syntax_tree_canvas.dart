@@ -70,64 +70,61 @@ class _SyntaxTreePainter extends CustomPainter {
   // Config
   static const radius = 24.0;
   static const diameter = 2 * radius;
-  static const minDistance = diameter;
   static const levelHeight = 2 * diameter;
 
   @override
   void paint(Canvas canvas, Size size) {
-    // POV
+    // POV.
     canvas.translate(offset.dx, offset.dy);
     canvas.scale(scale, scale);
 
-    // Painting
+    // Paint.
     final paint = Paint()
       ..color = Constants.accent
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    // Drawing nodes
+    // Draw nodes recursively.
     void drawNode(SyntaxTreeNode node, Offset center) {
+      // Draw this node.
       canvas.drawCircle(center, radius, paint);
       canvas.drawText(node.token.value.toString(), center);
 
-      final distance = pow(1.4, node.dReversedDepth) * minDistance;
-      final List<Offset> childCenters = [
-        center + Offset(-distance, levelHeight),
-        center + const Offset(0, levelHeight),
-        center + Offset(distance, levelHeight),
-      ];
-      // print("$childCenters  :::  $distance  :::  $center");
+      // Then its children.
+      // First, calculate the needed horizontal space.
+      final horizontalSpace = node.dDescendentsCount * diameter * 1.1;
 
-      switch (node.children.length) {
-        case 1:
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[1] - const Offset(0, radius), paint);
-          drawNode(node.children[0], childCenters[1]);
-          break;
-        case 2:
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[0] - const Offset(0, radius), paint);
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[2] - const Offset(0, radius), paint);
-          drawNode(node.children[0], childCenters[0]);
-          drawNode(node.children[1], childCenters[2]);
-          break;
-        case 3:
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[0] - const Offset(0, radius), paint);
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[1] - const Offset(0, radius), paint);
-          canvas.drawLine(center + const Offset(0, radius),
-              childCenters[2] - const Offset(0, radius), paint);
-          drawNode(node.children[0], childCenters[0]);
-          drawNode(node.children[1], childCenters[1]);
-          drawNode(node.children[2], childCenters[2]);
-          break;
-        default:
+      // Second, flex each child according to its
+      // descendents percentage of all node's descendents.
+      var consumedSpace = 0.0;
+      for (final child in node.children) {
+        final childHorizontalSpace =
+            ((child.dDescendentsCount + 1) / node.dDescendentsCount) *
+                horizontalSpace;
+
+        final offset = Offset(
+          /* start after consumed space */ consumedSpace /* flex */ +
+              childHorizontalSpace / 2 /* center under parent */ -
+              (horizontalSpace / 2),
+          levelHeight,
+        );
+
+        final childCenter = center + offset;
+
+        // Draw child.
+        drawNode(child, childCenter);
+
+        // Draw the arrow to child.
+        canvas.drawLine(center + const Offset(0, radius),
+            childCenter - const Offset(0, radius), paint);
+
+        // Update consumed space.
+        consumedSpace += childHorizontalSpace;
       }
     }
 
+    // Start.
     drawNode(syntaxTree, Offset(size.width / 2, 60));
   }
 

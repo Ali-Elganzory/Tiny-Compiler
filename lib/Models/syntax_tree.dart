@@ -4,10 +4,13 @@ import '/Models/token.dart';
 abstract class SyntaxTreeNode {
   Token get token;
   List<SyntaxTreeNode> get children;
-  String get dName;
-  int dReversedDepth = 0;
 
   bool get isLeaf => children.isEmpty;
+
+  // Accounting.
+  String get dName;
+  int dReversedDepth = 0;
+  int dDescendentsCount = 0;
 }
 
 class StmtSequanceSyntaxTreeNode extends SyntaxTreeNode {
