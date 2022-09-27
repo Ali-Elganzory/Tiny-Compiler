@@ -26,7 +26,10 @@ To begin the compilation just click on the run button to the left of the file bu
 #### Syntax Analysis (Abstract Syntax Tree) 
 
 In text:
-![Tokens](https://raw.githubusercontent.com/Ali-Elganzory/Tiny-Compiler/main/graphic/app_ast_text.png)
+![AST_Text](https://raw.githubusercontent.com/Ali-Elganzory/Tiny-Compiler/main/graphic/app_ast_text.png)
 
 In graph:
-![Tokens](https://raw.githubusercontent.com/Ali-Elganzory/Tiny-Compiler/main/graphic/app_ast_graph.png)
+![AST_Graph](https://raw.githubusercontent.com/Ali-Elganzory/Tiny-Compiler/main/graphic/app_ast_graph.png)
+
+You can investigate the graph by zooming and moving the right canvas as you like.
+![AST_Graph_Zoom](https://raw.githubusercontent.com/Ali-Elganzory/Tiny-Compiler/main/graphic/app_ast_graph_zoom.png)
